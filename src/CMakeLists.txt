@@ -28,7 +28,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 
 
 
-add_library(fby STATIC fbystd.cpp parsertokens.cpp textparse.yy.cpp fbystring.cpp fbyparsetree.cpp fbyregex.cpp fby_core_unix_array.cpp fby_core_unix_helpers.cpp fby_core_unix.cpp fbydb.cpp fbydb_sqlite3.cpp fbydb_postgresql.cpp fbyregexparser.cpp fbytreebuilder.cpp fbywikistrings.cpp fbynetserver.cpp fbyfileutils.cpp fbyimageutils.cpp fbyfilefind.cpp)
+add_library(fby STATIC fbystd.cpp fbystring.cpp fbyparsetree.cpp fbyregex.cpp fby_core_unix_array.cpp fby_core_unix_helpers.cpp fby_core_unix.cpp fbydb.cpp fbydb_sqlite3.cpp fbydb_postgresql.cpp fbyregexparser.cpp fbytreebuilder.cpp fbywikistrings.cpp fbynetserver.cpp fbyfileutils.cpp fbyimageutils.cpp fbyfilefind.cpp textparse.yy.cpp parsertokens.cpp)
 
 target_link_libraries(fby LINK_PUBLIC sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams )
 
@@ -141,11 +141,12 @@ add_executable(test_bodyparse test_bodyparse.cpp)
 target_link_libraries (test_bodyparse LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
 
+install (TARGETS fixedstringextractor sqlextractor DESTINATION bin)
 install (TARGETS fby DESTINATION lib)
 install (FILES
   fbyfileutils.h   fbyparsetree.h    fbytreebuilder.h
   fby_core_unix.h                 fby.h            fbyregex.h        fbywikistrings.h
-  fbyimageutils.h  fbyregexparser.h
+  fbyimageutils.h  fbyregexparser.h  fby_core_unix_array.h fby_core_unix_propertyhelper.h
   fbydb.h                         fbystd.h
   fbyfilefind.h                   fbynet.h         fbystring.h
   DESTINATION include)
