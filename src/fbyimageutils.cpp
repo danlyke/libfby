@@ -21,6 +21,10 @@ GPS Altitude :  0.00m
 JPEG Quality : 90
 */
 
+Regex regexPnginfoResolution("Pnginfo Resolution",
+                             "Image Width: (\\d+) Image Length: (\\d+)");
+
+
 Regex regexJheadResolution("JHead Resolution",
                            "Resolution\\s+\\:\\s+(\\d+)\\s*x\\s*(\\d+)");
 
@@ -76,4 +80,34 @@ string CreateThumbnail(string targetdir, string imagefile, int width)
                + "' '" + destimagepath + "'");
     ::system(cmd.c_str());
     return destimagepath;
+}
+
+bool FindPNGSize(const string &filename,
+                 int & width, int & height,
+                 map<string,string> &attributes)
+{
+    string command("pnginfo '" + filename + "'");
+
+    FILE *f = popen(command.c_str(), "r");
+    if (NULL == f)
+    {
+        string errstr("Unable to popen: " + command);
+        perror(errstr.c_str());
+        return false;
+    }
+
+    char buffer[256];
+    RegexMatch match;
+    while (NULL != fgets(buffer, sizeof(buffer) - 1, f))
+    {
+        string s(buffer);
+        if (regexPnginfoResolution.Match(s, match))
+        {
+            width = stoi(match.Match(1));
+            height = stoi(match.Match(2));
+        }
+    }
+
+    pclose(f);
+    return true;
 }
