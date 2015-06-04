@@ -66,11 +66,14 @@ public:
     virtual ~FbyDB() {};
 FbyDB(const char *name, int size) : BaseObj(name,size) {};
     void Write(FbyORM *obj);
+
+private:   
     virtual DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
                                    const char *whereclause) = 0;
     DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
                               const std::string &whereclause)
     { return Load(generator, whereclause);}
+public:
     std::string Quote(const std::string &s);
     std::string GetUpdateSQL(FbyORMPtr obj);
     std::string GetInsertSQL(FbyORMPtr obj);
@@ -112,7 +115,7 @@ FbyDB(const char *name, int size) : BaseObj(name,size) {};
         return selectvalue(s.c_str());
     }
     
-
+private:
     template <class C1, class C2> void CastCopyArray(DYNARRAY(C1) inData, DYNARRAY(FBYPTR(C2)) &outData)
     {
         for (int i = 0; i < inData->Count; ++i)
@@ -138,6 +141,7 @@ FbyDB(const char *name, int size) : BaseObj(name,size) {};
         DYNARRAY(FbyORMPtr) d =Load([](){ FbyORMPtr p(FBYNEW C()); return p; }, whereclause);
         CastCopyArray(d,data);
     }
+public:
     template <class C> void Load(std::vector<FBYPTR(C)> &data, const char *whereclause)
     {
         DYNARRAY(FbyORMPtr) d =Load([](){ FbyORMPtr p(FBYNEW C()); return p; }, whereclause);
