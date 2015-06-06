@@ -104,6 +104,9 @@ target_link_libraries ( example_strftime LINK_PUBLIC fby sqlite3 pq boost_filesy
 add_executable(example_findimageinfo example_findimageinfo.cpp)
 target_link_libraries (example_findimageinfo LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
+add_executable(example_findjpeginfo example_findjpeginfo.cpp)
+target_link_libraries (example_findjpeginfo LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
+
 add_executable( example_iter  example_iter.cpp)
 target_link_libraries ( example_iter LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 

@@ -29,7 +29,7 @@ Regex regexJheadResolution("JHead Resolution",
                            "Resolution\\s+\\:\\s+(\\d+)\\s*x\\s*(\\d+)");
 
 Regex regexJheadAttribute("JHead Attribute",
-                          "^(.*?)\\s+\\:\\s+(.*)$");
+                          "^(.*?)\\s*\\:\\s+(.*)(\n|$)");
 
 
 bool FindJPEGSize(const string &filename,
