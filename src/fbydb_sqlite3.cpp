@@ -14,7 +14,7 @@ using namespace std;
 FbySQLiteDB::FbySQLiteDB(const char *dbname) : 
     FbyDB(BASEOBJINIT(FbySQLiteDB)),
     currentGenerator(),
-    currentDynarray(),
+    currentVector(),
     db(NULL)
 {
     int rc;
@@ -46,25 +46,26 @@ static int callback(void *thisVoid, int argc, char **argv, char **azColName){
         }
     }
     obj->SetLoaded();
-    dbptr->currentDynarray->Add(obj);
+    dbptr->currentVector->push_back(obj);
     return 0;
 }
 
 
 
 
-DYNARRAY(FbyORMPtr) FbySQLiteDB::Load( std::function<FbyORMPtr (void)> generator,
-                                       const char *whereclause)
+int FbySQLiteDB::Load( std::vector<FbyORMPtr> *data,
+          std::function<FbyORM * (void)> generator,
+          const char *whereclause)
 {
     char *zErrMsg = 0;
     this->currentGenerator = generator;
-    this->currentDynarray = FBYNEWDYNARRAY(FbyORMPtr, 0);
+    this->currentVector = data;
     int rc = sqlite3_exec(db, whereclause, callback, static_cast<void *>(this), &zErrMsg);
     if( rc!=SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n%s\n", zErrMsg,whereclause);
         sqlite3_free(zErrMsg);
     }
-    return this->currentDynarray;
+    return this->currentVector->size();
 }
 
 
@@ -73,7 +74,8 @@ void FbySQLiteDB::Do( const char *s )
 {
     char *zErrMsg = 0;
 //    this->currentGenerator = generator;
-    this->currentDynarray = FBYNEWDYNARRAY(FbyORMPtr, 0);
+    std::vector<FbyORMPtr> arr;
+    this->currentVector = &arr;
     int rc = sqlite3_exec(db, s, callback, static_cast<void *>(this), &zErrMsg);
     if( rc!=SQLITE_OK ){
         fprintf(stderr, "SQL error: %s\n%s\n", zErrMsg,s);

@@ -31,8 +31,9 @@ FbyPostgreSQLDB::~FbyPostgreSQLDB()
     psql = nullptr;
 }
 
-DYNARRAY(FbyORMPtr) FbyPostgreSQLDB::Load( std::function<FbyORMPtr (void)> generator,
-                                       const char *whereclause)
+int FbyPostgreSQLDB::Load( std::vector<FbyORMPtr> *data,
+          std::function<FbyORM * (void)> generator,
+          const char *whereclause)
 {
     PGresult *result;
     result = PQexec(psql, whereclause);
@@ -53,14 +54,11 @@ DYNARRAY(FbyORMPtr) FbyPostgreSQLDB::Load( std::function<FbyORMPtr (void)> gener
         THROWEXCEPTION(errmsg.str());
     }
     }
-
-    DYNARRAY(FbyORMPtr) array;
     if (result)
     {
         int ntuples = PQntuples(result);
         int nfields = PQnfields(result);
-
-        array = FBYNEWDYNARRAY(FbyORMPtr, ntuples);
+        data->reserve(data->size() + ntuples);
         for (int row = 0; row < ntuples; ++row)
         {
             FbyORMPtr obj((generator)());
@@ -71,15 +69,11 @@ DYNARRAY(FbyORMPtr) FbyPostgreSQLDB::Load( std::function<FbyORMPtr (void)> gener
                                    PQgetvalue(result, row, column));
             }
             obj->SetLoaded();
-            array[row] = obj;
+            data->push_back(obj);
         }
         PQclear(result);
     }
-    else
-    {
-        array = FBYNEWDYNARRAY(FbyORMPtr, 0);
-    }
-    return array;
+    return data->size();
 }
 
 

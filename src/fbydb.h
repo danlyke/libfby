@@ -68,11 +68,12 @@ FbyDB(const char *name, int size) : BaseObj(name,size) {};
     void Write(FbyORM *obj);
 
 private:   
-    virtual DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
-                                   const char *whereclause) = 0;
-    DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
-                              const std::string &whereclause)
-    { return Load(generator, whereclause);}
+    virtual int Load( std::vector<FbyORMPtr> *data,
+                      std::function<FbyORM * (void)> generator,
+                      const char *whereclause) = 0;
+//    DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
+//                              const std::string &whereclause)
+//    { return Load(generator, whereclause);}
 public:
     std::string Quote(const std::string &s);
     std::string GetUpdateSQL(FbyORMPtr obj);
@@ -115,46 +116,26 @@ public:
         return selectvalue(s.c_str());
     }
     
-private:
-    template <class C1, class C2> void CastCopyArray(DYNARRAY(C1) inData, DYNARRAY(FBYPTR(C2)) &outData)
-    {
-        for (int i = 0; i < inData->Count; ++i)
-        {
-            C1 obj = inData[i];
-            FBYPTR(C2) d(dynamic_cast<C2 *>(&*obj));
-            outData->Add(d);
-        }
-    }
-
-    template <class C1, class C2> void CastCopyArray(DYNARRAY(C1) inData, std::vector<FBYPTR(C2)> &outData)
-    {
-        for (int i = 0; i < inData->Count; ++i)
-        {
-            C1 obj = inData[i];
-            FBYPTR(C2) d(dynamic_cast<C2 *>(&*obj));
-            outData.push_back(d);
-        }
-    }
-
-    template <class C> void Load(DYNARRAY(FBYPTR(C)) &data, const char *whereclause)
-    {
-        DYNARRAY(FbyORMPtr) d =Load([](){ FbyORMPtr p(FBYNEW C()); return p; }, whereclause);
-        CastCopyArray(d,data);
-    }
 public:
-    template <class C> void Load(std::vector<FBYPTR(C)> &data, const char *whereclause)
+    template <class C> int Load(std::vector<FBYPTR(C)> *data,
+                                const char *whereclause)
     {
-        DYNARRAY(FbyORMPtr) d =Load([](){ FbyORMPtr p(FBYNEW C()); return p; }, whereclause);
-        CastCopyArray(d,data);
+        std::vector<FbyORMPtr> * pdata(static_cast< std::vector<FbyORMPtr> *> (static_cast< std::vector<FbyORMPtr> *>( static_cast<void *>(data) ) ) );
+        return Load(pdata,
+                    []()
+                    {
+                        return (FbyORM*)(new C());
+                    },
+                    whereclause);
     }
 
-    template <class C> bool LoadOne(FBYPTR(C) &obj,
+    template <class C> bool LoadOne(FBYPTR(C) *obj,
                                     const std::string &whereclause, bool addDefaultSQL)
     {
         return LoadOne(obj, whereclause.c_str(), addDefaultSQL);
     }
 
-    template <class C> bool LoadOne(FBYPTR(C) &obj,
+    template <class C> bool LoadOne(FBYPTR(C) *obj,
                                     const char *whereclause, bool addDefaultSQL)
     {
         const char **keynames = C::StaticKeyNames();
@@ -171,30 +152,30 @@ public:
             sql += "=" + Quote(whereclause);
         }
         return LoadOne(obj, sql.c_str());
-        
     }
 
-    template <class C> bool LoadOne(FBYPTR(C) &obj,
+    template <class C> bool LoadOne(FBYPTR(C) *obj,
         const char *whereclause)
     {
-        DYNARRAY(FBYPTR(C)) data;
-        DYNARRAY(FbyORMPtr) loadedData(Load([](){ FbyORMPtr p(FBYNEW C()); return p; }, whereclause));
-        FBYASSERT(loadedData->Length <= 1);
-        CastCopyArray(loadedData,data);
-        if (data->Length > 0)
-            obj = data[0];
+        std::vector<FBYPTR(C)> data;
+        if (Load(&data, whereclause))
+        {
+            *obj = data[0];
+        }
         else
-            obj = FBYTYPEDNULL(FBYPTR(C));
-        return data->Length != 0;
+        {
+            *obj = FBYTYPEDNULL(FBYPTR(C));
+        }
+        return data.size() != 0;
     }
 
-    template <class C> bool LoadOne(FBYPTR(C) &obj,
+    template <class C> bool LoadOne(FBYPTR(C) *obj,
                                     std::string sql)
     {
         return LoadOne(obj, sql.c_str());
     }
 
-    template <class C> bool LoadOrCreate(FBYPTR(C) &obj,
+    template <class C> bool LoadOrCreate(FBYPTR(C) *obj,
         const std::string &primaryKey)
     {
         bool created = false;
@@ -209,21 +190,21 @@ public:
         
         if (!LoadOne(obj, sql))
         {
-            FBYPTR(C) newObj(FBYNEW C);
-            obj = newObj;
-            obj->AssignToMember(std::string(keynames[0]),
+            FBYPTR(C) newObj(new C);
+            *obj = newObj;
+            (*obj)->AssignToMember(std::string(keynames[0]),
                                 primaryKey);
 //            obj->ClearLoaded();
             created = true;
         }
         else
         {
-            obj->SetLoaded();
+            (*obj)->SetLoaded();
         }
         return created;
     }
 
-    template <class C> bool LoadOrCreate(FBYPTR(C) &obj,
+    template <class C> bool LoadOrCreate(FBYPTR(C) *obj,
                                          const std::vector<std::string> &primaryKeys)
     {
         bool created = false;
@@ -252,17 +233,17 @@ public:
         
         if (!LoadOne(obj, sql.c_str()))
         {
-            obj = FBYPTR(C) (FBYNEW C);
+            *obj = FBYPTR(C) (new C);
+            
             for (i = 0; i < primaryKeys.size(); ++i)
             {
-                obj->AssignToMember(std::string(C::StaticKeyNames()[i]),
+                (*obj)->AssignToMember(std::string(C::StaticKeyNames()[i]),
                                     primaryKeys[i]);
             }
             created = true;
         }
         return created;
     }
-
 };
 
 FBYCLASSPTR(FbyDB);
@@ -282,15 +263,15 @@ private:
 
 public:
     std::function<FbyORMPtr (void)> currentGenerator;
-    DYNARRAY(FbyORMPtr) currentDynarray;
+    std::vector<FbyORMPtr> * currentVector;
     sqlite3 *db;
     
 public:
     FbySQLiteDB(const char *);
     virtual ~FbySQLiteDB();
-    DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
-                                   const char *whereclause);
-    
+    virtual int Load( std::vector<FbyORMPtr> *data,
+                      std::function<FbyORM * (void)> generator,
+                      const char *whereclause);
     virtual void Do(const char *s);
 };
 
@@ -308,9 +289,9 @@ public:
 public:
     FbyPostgreSQLDB(const char *);
     virtual ~FbyPostgreSQLDB();
-    DYNARRAY(FbyORMPtr) Load( std::function<FbyORMPtr (void)> generator,
-                                   const char *whereclause);
-    
+    virtual int Load( std::vector<FbyORMPtr> *data,
+                      std::function<FbyORM * (void)> generator,
+                      const char *whereclause);
     virtual void Do(const char *s);
 };
 

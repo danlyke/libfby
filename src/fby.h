@@ -71,20 +71,6 @@ namespace FbyHelpers
 #include <boost/intrusive_ptr.hpp>
 #include "fby_core_unix_array.h"
 
-#define STATICARRAY(type,name,count) type name[count]
-#define ARRAY(t) UnixArray<t>
-#define DYNARRAY(t) UnixArray<t>
-//#define ARRAYELEM(t,a,n) (a[(n)])
-//#define ARRAYSIZE(a) (a)->Length
-//#define DYNARRAYSIZE(a) (a)->Count
-// #define DYNARRAYELEM(t,a,n) (a[(n)])
-#define STRING std::string
-#define NEWSTRING(s) std::string(s)
-#define STRINGSIZE(s) s.size()
-#define FBYNEW new
-#define FBYNEWARRAY(t,n) ARRAY(t)(n)
-#define FBYNEWDYNARRAY(t,n) DYNARRAY(t)(n)
-#define FBYNEWNARRAY(t,n,s) NARRAY(t,n)(s)
 #define FBYNULL NULL
 #define FBYINITNULL
 #define FBYTYPEDNULL(t) t()
@@ -108,17 +94,17 @@ namespace FbyHelpers
 namespace FbyHelpers 
 {
 
-	inline int Compare(const STRING &a, const STRING &b)
+	inline int Compare(const std::string &a, const std::string &b)
 	{
 		return strcmp(a.c_str(), b.c_str());
 	}
 
-	inline bool IsNull(const STRING &s)
+	inline bool IsNull(const std::string &s)
 	{
 		return s.length() == 0;
 	}
 
-	inline int Compare(const STRING &s, const char *v)
+	inline int Compare(const std::string &s, const char *v)
 	{
 		return strcmp(s.c_str(), v);
 	}
@@ -136,28 +122,12 @@ namespace FbyHelpers
         std::string file;
 	};
 
-#define THROWEXCEPTION(s) throw FbyBaseExceptionPtr(FBYNEW FbyBaseException(s, __LINE__, __FILE__ ))
+#define THROWEXCEPTION(s) throw FbyBaseExceptionPtr(new FbyBaseException(s, __LINE__, __FILE__ ))
 
-
-
-#define LOGERROR(s) fprintf(stderr, "%s(%d): %s", __FILE__, __LINE__, std::string(s).c_str())
-
-#define FBYASSERT(s) if (!(s)) { LOGERROR(#s); THROWEXCEPTION(#s); }
-#define FBYMANAGED
 
 	namespace FbyHelpers {
 		typedef unsigned char byte;
 		typedef unsigned short ushort;
-	}
-
-#define sprintf_s snprintf
-
-#define OVERRIDE
-
-	inline std::string STRING2string(STRING s)
-	{
-		std::string rs(s);
-		return rs;
 	}
 
 	inline std::string NumToString(float value)
@@ -242,8 +212,8 @@ namespace FbyHelpers
 	}
 
 
-	int StringToInt(STRING s);
-	bool StringToInt(STRING s, int *i);
+	int StringToInt(std::string s);
+	bool StringToInt(std::string s, int *i);
 	float StringToFloat(std::string s);
 
 #define STATICARRAYSIZE(a) (sizeof(a)/sizeof(*a))
@@ -264,8 +234,8 @@ private:
 	time_t ltime;
 public:
 	DateTime();
-	STRING ToString();
-	static DateTime Parse(STRING s);
+	std::string ToString();
+	static DateTime Parse(std::string s);
 };
 
 

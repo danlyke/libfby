@@ -410,7 +410,7 @@ int FbyDB::selectrows_array(std::vector< std::vector< std::string > > &values,
                             const char *s)
 {
     vector<FbyORMArrayPtr> array;
-    Load(array, s);
+    Load(&array, s);
     values.reserve(array.size());
     for (auto i = array.begin();
          i != array.end();
@@ -424,7 +424,7 @@ int FbyDB::selectrows_array(std::vector< std::vector< std::string > > &values,
 int FbyDB::selectrows_hash(std::vector< std::map< std::string, std::string > > &values, const char *s)
 {
     vector<FbyORMHashPtr> hash;
-    Load(hash, s);
+    Load(&hash, s);
     for (auto i = hash.begin(); i != hash.end(); ++i)
     {
         values.push_back((*i)->values);
@@ -435,7 +435,7 @@ int FbyDB::selectrows_hash(std::vector< std::map< std::string, std::string > > &
 bool FbyDB::selectrow_array(std::vector< std::string > &values, const char *s)
 {
     FbyORMArrayPtr arr;
-    bool loaded(LoadOne(arr, s));
+    bool loaded(LoadOne(&arr, s));
 
     if (loaded)
     {
@@ -451,7 +451,7 @@ bool FbyDB::selectrow_array(std::vector< std::string > &values, const char *s)
 bool FbyDB::selectrow_hash(std::map< std::string, std::string > &values, const char *s)
 {
     FbyORMHashPtr hash;
-    bool loaded(LoadOne(hash, s));
+    bool loaded(LoadOne(&hash, s));
     if (loaded)    
     {
         for (auto i = hash->values.begin(); i != hash->values.end(); ++i)
