@@ -6,7 +6,7 @@
 #include <string>
 #include <time.h>
 #include <sstream>
-
+#include <string.h>
 #include <limits.h>
 #include <float.h>
 

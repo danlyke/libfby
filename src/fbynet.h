@@ -60,33 +60,11 @@ public:
 
 
     bool write(const char *data, size_t length);
-    bool write(const std::string &s)
-    {
-        return write(s.data(), s.length());
-    }
-    bool write(const char *data)
-    {
-        return write(data, strlen(data));
-    }
-
-    bool end(const char *data, size_t length)
-    {
-//        std::cout << "Writing end " << (unsigned long)(this) << std::endl;
-        doneWithWrites = true;
-        return write(data, length);
-    }
-    bool end(const std::string &s)
-    {
-//        std::cout << "Writing end " << (unsigned long)(this) << std::endl;
-        doneWithWrites = true;
-        return write(s);
-    }
-    bool end(const char *data)
-    {
-//        std::cout << "Writing end " << (unsigned long)(this) << std::endl;
-        doneWithWrites = true;
-        return write(data);
-    }
+    bool write(const std::string &s);
+    bool write(const char *data);
+    bool end(const char *data, size_t length);
+    bool end(const std::string &s);
+    bool end(const char *data);
 };
 
 

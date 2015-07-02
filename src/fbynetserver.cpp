@@ -147,6 +147,35 @@ bool Socket::write(char const *data, size_t size)
     return wroteEverything;
 }
 
+bool Socket::write(const std::string &s)
+{
+    return write(s.data(), s.length());
+}
+bool Socket::write(const char *data)
+{
+    return write(data, strlen(data));
+}
+
+bool Socket::end(const char *data, size_t length)
+{
+//        std::cout << "Writing end " << (unsigned long)(this) << std::endl;
+    doneWithWrites = true;
+    return write(data, length);
+}
+bool Socket::end(const std::string &s)
+{
+//        std::cout << "Writing end " << (unsigned long)(this) << std::endl;
+    doneWithWrites = true;
+    return write(s);
+}
+bool Socket::end(const char *data)
+{
+//        std::cout << "Writing end " << (unsigned long)(this) << std::endl;
+    doneWithWrites = true;
+    return write(data);
+}
+
+
 ServerPtr Net::createServer(CreateServerFunction f)
 {
     ServerPtr server(new Server(this, f));

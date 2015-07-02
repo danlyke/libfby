@@ -1,4 +1,5 @@
 #include "fbyregex.h"
+#include <string.h>
 
 int RegexMatch::BufferLength()
 {

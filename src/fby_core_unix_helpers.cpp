@@ -1,9 +1,7 @@
-#include "StdAfx.h"
+#include "fby.h"
 
-#include <math.h>
-#include <float.h>
-#include <limits.h>
-#include "fby_core_unix.h"
+#include <string.h>
+
 
 using namespace std;
 

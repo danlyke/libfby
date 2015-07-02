@@ -69,7 +69,7 @@ namespace FbyHelpers
 #include <string>
 #include <boost/smart_ptr.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include "fby_core_unix_array.h"
+// #include "fby_core_unix_array.h"
 
 #define FBYNULL NULL
 #define FBYINITNULL
@@ -93,21 +93,6 @@ namespace FbyHelpers
 
 namespace FbyHelpers 
 {
-
-	inline int Compare(const std::string &a, const std::string &b)
-	{
-		return strcmp(a.c_str(), b.c_str());
-	}
-
-	inline bool IsNull(const std::string &s)
-	{
-		return s.length() == 0;
-	}
-
-	inline int Compare(const std::string &s, const char *v)
-	{
-		return strcmp(s.c_str(), v);
-	}
 
 	class FbyBaseException;
 	typedef boost::shared_ptr<FbyBaseException> FbyBaseExceptionPtr;

@@ -27,7 +27,6 @@ ostream& operator<<(ostream& os, const vector<T>& v)
 int main(int ac, char* av[])
 {
     try {
-        int opt;
         string config_file;
 
         string target_file;
