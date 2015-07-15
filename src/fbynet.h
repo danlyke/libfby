@@ -44,21 +44,9 @@ private:
     void SetSocketServerAndFile(Net* net, int fd);
 public:
     Socket();
-    void onData(OnDataFunction on_data)
-    {
-        this->on_data = on_data;
-    }
-
-    void onDrain(OnDrainFunction on_drain)
-    {
-        this->on_drain = on_drain;
-    }
-    void onEnd(OnEndFunction on_end)
-    {
-        this->on_end = on_end;
-    }
-
-
+    void onData(OnDataFunction on_data);
+    void onDrain(OnDrainFunction on_drain);
+    void onEnd(OnEndFunction on_end);
     bool write(const char *data, size_t length);
     bool write(const std::string &s);
     bool write(const char *data);
@@ -108,6 +96,8 @@ IntervalTimeoutObject(std::function<void()> triggered_function,
     {}
     void unref() { stillNeedsEvents = false; }
     void ref() { stillNeedsEvents = true; }
+
+    long processTimeStepGetNextTime(long elapsed_microseconds);
 };
 
 FBYCLASSPTR(TimeoutObject);
@@ -162,73 +152,26 @@ public:
     std::vector<SocketPtr> sockets;
     std::vector<IntervalTimeoutObjectPtr> timers;
 
-Net() : BaseObj(BASEOBJINIT(Net)), servers(), sockets(), timers() {}
+    bool debug;
+    
+    Net();
+    ~Net();
 public:
     ServerPtr createServer(CreateServerFunction f);
     void loop();
 
-    TimeoutObjectPtr setTimeout(std::function<void ()> callback,int delay_ms)
-    {
-        TimeoutObjectPtr timeout(new TimeoutObject(
-                                     callback,
-                                     delay_ms));
-        timers.push_back(timeout);
-        return timeout;
-    }
-    template <typename Arg0> TimeoutObjectPtr setTimeout(std::function<void (Arg0)> callback, int delay_ms,
-                                                         Arg0 arg0)
-    {
-        return setTimeout([=]() { callback(arg0); }, delay_ms);
-    }
-    void clearTimeout(TimeoutObjectPtr timeout)
-    {
-        auto timer(std::find(timers.begin(), timers.end(),timeout));
-        if (timer != timers.end())
-        {
-            timers.erase(timer);
-        }
-    }
-    IntervalObjectPtr setInterval(std::function<void ()> callback,int delay_ms)
-    {
-        IntervalObjectPtr timeout(new IntervalObject(
-                                      callback,
-                                      delay_ms,
-                                      delay_ms));
-        timers.push_back(timeout);
-        return timeout;
-    }
-    IntervalObjectPtr setInterval(std::function<void ()> callback,int delay_ms, int recurring_ms)
-    {
-        IntervalObjectPtr timeout(new IntervalObject(
-                                      callback,
-                                      delay_ms,
-                                      recurring_ms));
-        timers.push_back(timeout);
-        return timeout;
-    }
-    void clearInterval(IntervalObjectPtr interval)
-    {
-        auto timer(std::find(timers.begin(), timers.end(),interval));
-        if (timer != timers.end())
-        {
-            timers.erase(timer);
-        }
-    }
-
-    ImmediateObjectPtr setImmediate(std::function<void ()> callback)
-    {
-        ImmediateObjectPtr timeout(new ImmediateObject(callback));
-        timers.push_back(timeout);
-        return timeout;
-    }
-    void clearImmediate(ImmediateObjectPtr immediate)
-    {
-        auto timer(std::find(timers.begin(), timers.end(), immediate));
-        if (timer != timers.end())
-        {
-            timers.erase(timer);
-        }
-    }
+    TimeoutObjectPtr setTimeout(std::function<void ()> callback,int delay_ms);
+    template <typename Arg0> TimeoutObjectPtr
+        setTimeout(std::function<void (Arg0)> callback, int delay_ms,
+                   Arg0 arg0);
+    void clearTimeout(TimeoutObjectPtr timeout);
+    IntervalObjectPtr setInterval(std::function<void ()> callback,
+                                  int delay_ms);
+    IntervalObjectPtr setInterval(std::function<void ()> callback,
+                                  int delay_ms, int recurring_ms);
+    void clearInterval(IntervalObjectPtr interval);
+    ImmediateObjectPtr setImmediate(std::function<void ()> callback);
+    void clearImmediate(ImmediateObjectPtr immediate);
 };
 
 
@@ -258,10 +201,7 @@ public:
     bool end(const char *);
     bool end(const char *data, size_t length);
     bool end(const std::string &s);
-    void onDrain(OnDrainFunction on_drain)
-    {
-        socket->onDrain(on_drain);
-    }
+    void onDrain(OnDrainFunction on_drain);
 };
 
 FBYCLASS(HTTPRoute) : public ::FbyHelpers::BaseObj
@@ -285,14 +225,8 @@ public:
     std::string path;
     std::string protocol;
     std::map<std::string, std::string> headers;
-    void onData(OnDataFunction on_data)
-    {
-        this->on_data = on_data;
-    }
-    void onEnd(OnEndFunction on_end)
-    {
-        this->on_end = on_end;
-    }
+    void onData(OnDataFunction on_data);
+    void onEnd(OnEndFunction on_end);
     HTTPRequest();
 };
 
@@ -352,24 +286,6 @@ public:
 //}
 
 
-inline Socket::Socket()
-: BaseObj(BASEOBJINIT(Socket)),
-              fd(-1), 
-              on_data([](const char *, size_t){}), 
-              on_drain([](){}),
-              on_end([](){}),
-              net(),
-              queuedWrite(), emitDrain(false),
-              doneWithWrites(false)
-{
-}
-
-inline void Socket::SetSocketServerAndFile(Net* net, int fd)
-{
-    std::cout << "Setting socket server and file " << fd << std::endl;
-    this->net = net;
-    this->fd = fd;
-}
 
 
 inline Server::Server(Net * net, CreateServerFunction create_func)
