@@ -1,7 +1,9 @@
 # libfby
 
-idioms so that I start projects in C++, rather than just finishing
-them there.
+Idioms so that I start projects in C++, rather than just finishing
+them there. Includes Perl-style regex wrappers, HTML and markdown-ish
+parsers, network interactions including an HTTP server, and a simple
+SQL database ORM.
 
 Dan Lyke
 danlyke@flutterby.com
@@ -36,7 +38,7 @@ I had a couple of goals with this system:
   language.
 
 * I had a Perl system that was built on top of the parser that
-  runs Flutterby.com. There were operations that weren't as fast as
+  runs Flutterby.net. There were operations that weren't as fast as
   they should have been, and I knew that I some structural performance
   issues that it'd be nice to get fixed. I didn't realize how much
   just moving the same things into C++ would speed things up, but I
@@ -72,7 +74,7 @@ remain.
 * Once the app is split from the library, there's a lot of test
   framework that needs to be built for both. As time allows.
 
-* The Net server is starting to get pretty asynchronous and event
+* The net server is starting to get pretty asynchronous and event
   driven, the database libraries have a long way to go to catch up
   with this.
 
