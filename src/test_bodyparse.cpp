@@ -5,7 +5,7 @@
 
 #include <string>
 using namespace std;
-using namespace FbyHelpers;
+using namespace Fby;
 
 
 const char testbody[] =

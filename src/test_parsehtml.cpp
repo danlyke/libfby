@@ -6,7 +6,7 @@
 #include "fbystring.h"
 #include "fbyregexparser.h"
 
-
+using namespace Fby;
 
 class TestTreeBuilder : public TreeBuilder
 {
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
     fread(buffer, length, 1, f);
     fclose(f);
 
-    length = RemoveCRs(buffer, length);
+    length = remove_carriage_returns(buffer, length);
 
     {
         HTMLParser treeParser;

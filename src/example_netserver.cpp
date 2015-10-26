@@ -1,6 +1,8 @@
 #include "fbynet.h"
 #include <string>
+#include <iostream>
 using namespace std;
+using namespace Fby;
 
 int main(int /* argc */, char ** /* argv */)
 {

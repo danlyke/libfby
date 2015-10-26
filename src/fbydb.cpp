@@ -11,47 +11,52 @@
 #include <float.h>
 
 using namespace std;
+using namespace Fby;
 
-time_t TextDateToTime(const string &textDate)
-{
-    struct tm t;
-    const char *lastchar;
-    memset(&t, '\0', sizeof(t));
-    lastchar = strptime(textDate.c_str(), "%Y-%m-%d %H:%M:%S%z", &t);
+namespace Fby {
     
-    if (!(lastchar && !*lastchar))
+    time_t TextDateToTime(const string &textDate)
     {
+        struct tm t;
+        const char *lastchar;
         memset(&t, '\0', sizeof(t));
-        lastchar = strptime(textDate.c_str(), "%Y-%m-%d %H:%M:%S", &t);
+        lastchar = strptime(textDate.c_str(), "%Y-%m-%d %H:%M:%S%z", &t);
     
-        if (!(lastchar && *lastchar == '.'))
+        if (!(lastchar && !*lastchar))
         {
-            if (!(lastchar && !*lastchar))
+            memset(&t, '\0', sizeof(t));
+            lastchar = strptime(textDate.c_str(), "%Y-%m-%d %H:%M:%S", &t);
+    
+            if (!(lastchar && *lastchar == '.'))
             {
-                memset(&t, '\0', sizeof(t));
-                lastchar = strptime(textDate.c_str(), "%Y-%m-%d", &t);
                 if (!(lastchar && !*lastchar))
-                { 
-                    memset( &t, '\0', sizeof(t) );
-                    // THROWEXCEPTION("Unrecognized date format '" + textDate + "'");
+                {
+                    memset(&t, '\0', sizeof(t));
+                    lastchar = strptime(textDate.c_str(), "%Y-%m-%d", &t);
+                    if (!(lastchar && !*lastchar))
+                    { 
+                        memset( &t, '\0', sizeof(t) );
+                        // THROWEXCEPTION("Unrecognized date format '" + textDate + "'");
+                    }
                 }
             }
         }
+
+        t.tm_isdst = 0; // Timezone should have been gotten in strptime
+        time_t retTime(timegm(&t));
+        return retTime;
     }
 
-    t.tm_isdst = 0; // Timezone should have been gotten in strptime
-    time_t retTime(timegm(&t));
-    return retTime;
-}
+    string TimeToTextDate(time_t t)
+    {
+        struct tm *ptm = gmtime(&t);
+        char timebuf[32];
 
-string TimeToTextDate(time_t t)
-{
-    struct tm *ptm = gmtime(&t);
-    char timebuf[32];
+        strftime(timebuf, sizeof(timebuf), "%Y-%m-%d %H:%M:%S%z", ptm);
+        return string(timebuf);
+    }
 
-    strftime(timebuf, sizeof(timebuf), "%Y-%m-%d %H:%M:%S%z", ptm);
-    return string(timebuf);
-}
+} // end of namespace fby
 
 
 bool wrapper_stobool(const string &in)
@@ -108,7 +113,7 @@ long wrapper_stold(const string &in)
 
 
 FbyORM::FbyORM(const char *name, int size) :
-    ::FbyHelpers::BaseObj(name, size),
+    ::Fby::BaseObj(name, size),
     loaded(false)
 {
 }

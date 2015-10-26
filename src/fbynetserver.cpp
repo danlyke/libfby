@@ -17,8 +17,9 @@
 #include <time.h>
 #include <netdb.h>
 #include <ctype.h>
+#include <iostream>
 
-using namespace FbyHelpers;
+using namespace Fby;
 using namespace std;
 
 int termsig = 0;
@@ -167,7 +168,11 @@ TimeoutObjectPtr Net::setTimeout(std::function<void ()> callback,int delay_ms)
     TimeoutObjectPtr timeout(new TimeoutObject(
                                  callback,
                                  delay_ms));
+    if (debug)
+        cout << "Added timeout" << timers.size() << endl;
     timers.push_back(timeout);
+    if (debug)
+        cout << "Timers is now " << timers.size() << endl;
     return timeout;
 }
 
@@ -183,6 +188,8 @@ void Net::clearTimeout(TimeoutObjectPtr timeout)
     auto timer(std::find(timers.begin(), timers.end(),timeout));
     if (timer != timers.end())
     {
+        if (debug)
+            cout << "Removing timeout" << (timer - timers.begin()) << endl;
         timers.erase(timer);
     }
 }
@@ -192,7 +199,11 @@ IntervalObjectPtr Net::setInterval(std::function<void ()> callback,int delay_ms)
                                   callback,
                                   delay_ms,
                                   delay_ms));
+    if (debug)
+        cout << "Added interval A " << timers.size() << endl;
     timers.push_back(timeout);
+    if (debug)
+        cout << "Timers is now " << timers.size() << endl;
     return timeout;
 }
 
@@ -202,7 +213,11 @@ IntervalObjectPtr Net::setInterval(std::function<void ()> callback,int delay_ms,
                                   callback,
                                   delay_ms,
                                   recurring_ms));
+    if (debug)
+        cout << "Added interval B " << timers.size() << endl;
     timers.push_back(timeout);
+    if (debug)
+        cout << "Timers is now " << timers.size() << endl;
     return timeout;
 }
 void Net::clearInterval(IntervalObjectPtr interval)
@@ -210,6 +225,8 @@ void Net::clearInterval(IntervalObjectPtr interval)
     auto timer(std::find(timers.begin(), timers.end(),interval));
     if (timer != timers.end())
     {
+        if (debug)
+            cout << "Removing interval" << (timer - timers.begin()) << endl;
         timers.erase(timer);
     }
 }
@@ -217,7 +234,11 @@ void Net::clearInterval(IntervalObjectPtr interval)
 ImmediateObjectPtr Net::setImmediate(std::function<void ()> callback)
 {
     ImmediateObjectPtr timeout(new ImmediateObject(callback));
+    if (debug)
+        cout << "Added immediate " << timers.size() << endl;
     timers.push_back(timeout);
+    if (debug)
+        cout << "Timers is now " << timers.size() << endl;
     return timeout;
 }
 void Net::clearImmediate(ImmediateObjectPtr immediate)
@@ -225,6 +246,8 @@ void Net::clearImmediate(ImmediateObjectPtr immediate)
     auto timer(std::find(timers.begin(), timers.end(), immediate));
     if (timer != timers.end())
     {
+        if (debug)
+            cout << "Removing timeout" << (timer - timers.begin()) << endl;
         timers.erase(timer);
     }
 }
@@ -249,7 +272,7 @@ Net::loop()
 
 	for (;(servers.size() || sockets.size()) && !termsig;) 
 	{
-//        fprintf(stderr, "Beginning of event loop\n");
+        fprintf(stderr, "Beginning of event loop\n");
 		FD_ZERO(&read_fds);
 		FD_ZERO(&write_fds);
 
@@ -282,12 +305,19 @@ Net::loop()
 
         long next_timer_microseconds(LONG_MAX);
 
+        if (debug)
+            cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
         for (size_t i = 0; i < timers.size(); ++i)
         {
-            auto timer = timers[i];
-
+            if (debug)
+                cout << "Looking at time for timer " << i << " of " << timers.size() << endl;
+            auto timer(timers[i]);
+            if (debug)
+                cout << "About to process time" << endl;
             long next_time(timer->processTimeStepGetNextTime(elapsed_microseconds));
 
+            if (debug)
+                cout << "Got " << next_time << endl;
             if (next_time == 0)
             {
                 timers.erase(timers.begin() + i);
@@ -298,6 +328,8 @@ Net::loop()
                 next_timer_microseconds = next_time;
             }
         }
+        if (debug)
+            cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
 
         struct timeval *ptv(NULL), tv;
 
@@ -340,6 +372,8 @@ Net::loop()
 				}
 			}
 		}
+        if (debug)
+            cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
 		
         for (auto socket = sockets.begin(); socket != sockets.end(); ++socket)
         {
@@ -350,13 +384,19 @@ Net::loop()
                 if (len > 0)
                 {
                     buffer[len]  = 0;
-//                    fprintf(stderr, "Socket %lx Read %d bytes from %d '%*s'\n", (unsigned long)(&**socket), (int)len, (*socket)->fd, (int)len, buffer);
+                    if (debug)
+                        fprintf(stderr, "Socket %lx Read %d bytes from %d '%*s'\n", (unsigned long)(&**socket), (int)len, (*socket)->fd, (int)len, buffer);
                     (*socket)->on_data(buffer, len);
-//                    std::cerr << "Sent bytes to " << (*socket)->fd << " done " << (*socket)->doneWithWrites << std::endl;
+                    if (debug)
+                        std::cerr << "Sent bytes to " << (*socket)->fd << " done " << (*socket)->doneWithWrites << std::endl;
+                    if (debug)
+                        cout << "After read Timers is now " << timers.size() << endl;
                 }
                 else
                 {
                     (*socket)->on_end();
+                    if (debug)
+                        cout << "After onend Timers is now " << timers.size() << endl;
                     (*socket)->fd = -1;
                     if (debug)
                     {
@@ -365,8 +405,12 @@ Net::loop()
                     }
                 }
             }
+            if (debug)
+                cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
             if (FD_ISSET((*socket)->fd, &write_fds))
             {
+                if (debug)
+                    cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
                 size_t len = write((*socket)->fd,
                                    (*socket)->queuedWrite.data(), (*socket)->queuedWrite.size());
                 if (len > 0)
@@ -381,17 +425,25 @@ Net::loop()
                         (*socket)->queuedWrite.clear();
                     }
                 }
+                if (debug)
+                    cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
             }
             if ((*socket)->emitDrain)
             {
                 if ((*socket)->on_drain)
                 {
+                    if (debug)
+                        cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
                     (*socket)->on_drain();
+                    if (debug)
+                        cout << "at line " << __LINE__ << " Timers is now " << timers.size() << endl;
                 }
                 (*socket)->emitDrain = false;
             }
 
         }
+        if (debug)
+            cout << "Before drain check Timers is now " << timers.size() << endl;
 
         for (ssize_t i = 0; i < (ssize_t)(sockets.size()); ++i)
         {
@@ -410,6 +462,8 @@ Net::loop()
                 --i;
             }
         }
+        if (debug)
+            cout << "After drain check Timers is now " << timers.size() << endl;
         
 
         for (size_t i = 0; i < sockets.size(); ++i)
@@ -420,7 +474,9 @@ Net::loop()
                 --i;
             }
         }
-        /* DO THE WRITE, AND THE CLOSE */
+        if (debug)
+            cout << "At end of loop, Timers is now " << timers.size() << endl;
+    /* DO THE WRITE, AND THE CLOSE */
 	}
 
     releasesignals();

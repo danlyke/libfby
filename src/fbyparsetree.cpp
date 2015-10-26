@@ -1,8 +1,10 @@
 #include "fbyparsetree.h"
 #include "fbywikistrings.h"
 
+using namespace Fby;
+    
 HTMLOutputter::HTMLOutputter()
-    : FbyHelpers::BaseObj(BASEOBJINIT(HTMLOutputter))
+    : BaseObj(BASEOBJINIT(HTMLOutputter))
 {}
 
 
@@ -220,12 +222,7 @@ string DecodeHexNumericEntity(const char *str)
 
 
 
-bool PopNodeStackToTagname(NodeStack_t &nodeStack, const string &name)
-{
-    return PopNodeStackToTagname(nodeStack, name.c_str());
-}
-
-ParseTreeNode::ParseTreeNode(const char *name, int size) : ::FbyHelpers::BaseObj(name,size)
+ParseTreeNode::ParseTreeNode(const char *name, int size) : BaseObj(name,size)
 {
 //    cout << "Creating ParseTreeNode " << name << endl;
 }

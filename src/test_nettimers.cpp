@@ -2,6 +2,8 @@
 #include "fbynet.h"
 using namespace std;
 
+using namespace Fby;
+
 TEST(TimeoutTimer,TimeoutTimer)
 {
     int timerTriggeredCount(0);

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-
+using namespace Fby;
 // FbySQLiteDB::LastInsertRowId()
 // {
 //     return sqlite3_last_insert_rowid(db);

@@ -1,6 +1,7 @@
 #include <map>
 #include <string.h>
 #include "fbyregex.h"
+#include <iostream>
 
 using namespace std;
 

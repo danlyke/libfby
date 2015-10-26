@@ -4,7 +4,8 @@
 
 
 using namespace std;
-using namespace FbyHelpers;
+using namespace Fby;
+
 const char requestText[] =
     "GET / HTTP/1.1\r\n"
     "Host: home.flutterby.net\r\n"

@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 using namespace std;
-using namespace FbyHelpers;
+using namespace Fby;
 
 #define REGEXBLOCK_NOSQL "(\\s+(\\/\\*\\s*nosql\\s*\\*\\/)|\\/\\/\\s*nosql)?"
 Regex regexMatchClass("regexMatchClass",

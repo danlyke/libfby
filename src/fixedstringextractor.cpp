@@ -6,7 +6,7 @@
 #include "fby.h"
 
 using namespace std;
-using namespace FbyHelpers;
+using namespace Fby;
 
 Regex regex_FbySection("^\\s*\\/\\/\\s*FbySection:\\s*(.*?)\\s*$");
 

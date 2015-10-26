@@ -16,9 +16,10 @@
 #include <time.h>
 #include <netdb.h>
 #include <ctype.h>
+#include <iostream>
 
 using namespace std;
-using namespace FbyHelpers;
+using namespace Fby;
 
 void HTTPResponse::onDrain(OnDrainFunction on_drain)
 {
@@ -37,7 +38,7 @@ void HTTPRequest::onEnd(OnEndFunction on_end)
 
 
 HTTPResponse::HTTPResponse(SocketPtr socket) :
-    ::FbyHelpers::BaseObj(BASEOBJINIT(HTTPResponse)),
+    BaseObj(BASEOBJINIT(HTTPResponse)),
     socket(socket),
     wroteHeader(false)
 {
@@ -84,7 +85,7 @@ const char *MimeTypeForExtension(const string &path)
     
     for (size_t i = 0; i < sizeof(mimeTypesByExtension) / sizeof(*mimeTypesByExtension); ++i)
     {
-        if (endswith(path, mimeTypesByExtension[i].extension))
+        if (ends_with(path, mimeTypesByExtension[i].extension))
         {
             mimeType = mimeTypesByExtension[i].mimeType;
             break;
@@ -639,7 +640,7 @@ HTTPRequest::HTTPRequest() :
 
 
 
-bool ServeFile(const char * fileRoot, HTTPRequestPtr request, HTTPResponsePtr response)
+bool ::Fby::ServeFile(const char * fileRoot, HTTPRequestPtr request, HTTPResponsePtr response)
 {
     int fd;
     string path(fileRoot);

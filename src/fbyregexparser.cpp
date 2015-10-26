@@ -6,6 +6,7 @@
 #include "fbywikistrings.h"
 #include "fbystring.h"
 
+using namespace Fby;
 
 class RegexMatcher : public Regex {
 public:

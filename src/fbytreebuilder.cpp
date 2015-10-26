@@ -1,6 +1,7 @@
 #include "fbytreebuilder.h"
+using namespace Fby;
 
-TreeBuilder::TreeBuilder() : FbyHelpers::BaseObj(BASEOBJINIT(TreeBuilder)),
+TreeBuilder::TreeBuilder() : BaseObj(BASEOBJINIT(TreeBuilder)),
                              rootNode(new ElementNode("div")),
                              nodeStack(),
                              lastNode(rootNode)

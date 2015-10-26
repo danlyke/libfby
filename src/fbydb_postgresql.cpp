@@ -5,6 +5,7 @@
 #include "fbydb.h"
 
 using namespace std;
+using namespace Fby;
 
 FbyPostgreSQLDB::FbyPostgreSQLDB(const char *connection_string) : 
     FbyDB(BASEOBJINIT(FbyPostgreSQLDB)),

@@ -20,15 +20,15 @@
     C& operator=(const C&);  \
 
 
-namespace FbyHelpers {
+namespace Fby {
 	class BaseObj;
 };
 
 namespace boost
 {
 
-	void intrusive_ptr_add_ref(FbyHelpers::BaseObj * p);
-	void intrusive_ptr_release(FbyHelpers::BaseObj * p);
+	void intrusive_ptr_add_ref(Fby::BaseObj * p);
+	void intrusive_ptr_release(Fby::BaseObj * p);
 } // namespace boost
 
 #include <boost/intrusive_ptr.hpp>
@@ -44,7 +44,7 @@ namespace boost
 //#define FBYCLASSLITEPTR(c) class c; typedef boost::shared_ptr<c> c##Ptr
 
 
-namespace FbyHelpers
+namespace Fby
 {
 #define BASEOBJINIT(t) ""#t, sizeof(t)
 	class BaseObj
@@ -91,7 +91,7 @@ namespace FbyHelpers
 // #define REMOVEDYNARRAYELEM(a, e) a->Remove(e)
 
 
-namespace FbyHelpers 
+namespace Fby 
 {
 
 	class FbyBaseException;
@@ -110,120 +110,12 @@ namespace FbyHelpers
 #define THROWEXCEPTION(s) throw FbyBaseExceptionPtr(new FbyBaseException(s, __LINE__, __FILE__ ))
 
 
-	namespace FbyHelpers {
-		typedef unsigned char byte;
-		typedef unsigned short ushort;
-	}
-
-	inline std::string NumToString(float value)
-	{
-		char ach[16];
-		snprintf(ach, sizeof(ach), "%f", value);
-		return std::string(ach);
-	}
-
-	inline std::string NumToString(double value)
-	{
-		char ach[16];
-		snprintf(ach, sizeof(ach), "%f", value);
-		return std::string(ach);
-	}
-
-	inline std::string NumToString(int value)
-	{
-		char ach[16];
-		snprintf(ach, sizeof(ach),"%d", value);
-		return std::string(ach);
-	}
-
-
-	inline std::string NumToString(int value, int places)
-	{
-		char ach[16];
-
-		snprintf(ach, sizeof(ach),"%*.*d", places, places, value);
-		return std::string(ach);
-	}
-
-	inline std::string NumToString(float value, int places)
-	{
-		char ach[16];
-
-		snprintf(ach, sizeof(ach),"%*.*f", places, places, value);
-		return std::string(ach);
-	}
-
-	inline std::string NumToString(float value, int places1, int places2)
-	{
-		char ach[16];
-
-		snprintf(ach, sizeof(ach),"%*.*f", places1, places2, value);
-		return std::string(ach);
-	}
-
-	inline int Math_Min(int a, int b)
-	{
-		return (a < b) ? a : b;
-	}
-
-	inline float Math_Min(float a, float b)
-	{
-		return (a < b) ? a : b;
-	}
-#if 1
-	template <typename T> inline T Math_Max(T a, T b)
-	{
-		return (a > b) ? a : b;
-	}
-#else
-	inline int Math_Max(int a, int b)
-	{
-		return (a > b) ? a : b;
-	}
-
-	inline float Math_Max(float a, float b)
-	{
-		return (a > b) ? a : b;
-	}
-
-	inline double Math_Max(double a, double b)
-	{
-		return (a > b) ? a : b;
-	}
-#endif
-	inline float Math_Round(float a)
-	{
-		return (float)(int)(a + .5);
-	}
-
-
-	int StringToInt(std::string s);
-	bool StringToInt(std::string s, int *i);
-	float StringToFloat(std::string s);
+    typedef unsigned char byte;
+    typedef unsigned short ushort;
 
 #define STATICARRAYSIZE(a) (sizeof(a)/sizeof(*a))
 
-#define PI 3.1415926538
 
-
-#define STATIC_H_INIT(x)
-#define STATIC_C_INIT(t,c,v,x) t c::v(x)
-#define STATIC_C_DECL(t,c,v) t c::v
-#define FBYNULLINIT ()
-#define FBYNULLCONSTRUCTOR
-
-
-class DateTime
-{
-private:
-	time_t ltime;
-public:
-	DateTime();
-	std::string ToString();
-	static DateTime Parse(std::string s);
-};
-
-
-} // end of namespace FbyHelpers;
+} // end of namespace Fby;
 
 #endif /* #ifdef INCLUDED_FBY_H */

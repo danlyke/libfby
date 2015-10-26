@@ -1,6 +1,9 @@
 #include "fbynet.h"
 #include <string.h>
 
+using namespace Fby;
+
+
 void Socket::onData(OnDataFunction on_data)
 {
     this->on_data = on_data;

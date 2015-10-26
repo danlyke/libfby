@@ -2,6 +2,7 @@
 #include "fbystring.h"
 
 using namespace std;
+using namespace Fby;
 
 TEST(EndsWithWorks,EndsWithWorks)
 {
@@ -11,15 +12,15 @@ TEST(EndsWithWorks,EndsWithWorks)
     string dotjs(".js");
     string shortstr("a");
 
-    EXPECT_TRUE(endswith(indexdothtml, dothtml));
-    EXPECT_FALSE(endswith(indexdothtml, dotjs));
+    EXPECT_TRUE(ends_with(indexdothtml, dothtml));
+    EXPECT_FALSE(ends_with(indexdothtml, dotjs));
 
-    EXPECT_FALSE(endswith(bladotjs, dothtml));
-    EXPECT_TRUE(endswith(bladotjs, dotjs));
+    EXPECT_FALSE(ends_with(bladotjs, dothtml));
+    EXPECT_TRUE(ends_with(bladotjs, dotjs));
 
-    EXPECT_FALSE(endswith(shortstr,dotjs));
-    EXPECT_FALSE(endswith(dothtml, indexdothtml));
-    EXPECT_FALSE(endswith(dotjs, indexdothtml));
-    EXPECT_FALSE(endswith(dothtml, bladotjs));
-    EXPECT_FALSE(endswith(dotjs, bladotjs));
+    EXPECT_FALSE(ends_with(shortstr,dotjs));
+    EXPECT_FALSE(ends_with(dothtml, indexdothtml));
+    EXPECT_FALSE(ends_with(dotjs, indexdothtml));
+    EXPECT_FALSE(ends_with(dothtml, bladotjs));
+    EXPECT_FALSE(ends_with(dotjs, bladotjs));
 }
