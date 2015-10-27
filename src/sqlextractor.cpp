@@ -12,11 +12,11 @@ using namespace Fby;
 
 #define REGEXBLOCK_NOSQL "(\\s+(\\/\\*\\s*nosql\\s*\\*\\/)|\\/\\/\\s*nosql)?"
 Regex regexMatchClass("regexMatchClass",
-                 "^\\s*class\\s+(.*?)\\s*\\:\\s*public \\s*FbyORM"
+                 "^\\s*class\\s+(.*?)\\s*\\:\\s*public \\s*(\\:\\:)?(Fby\\:\\:)?FbyORM"
     REGEXBLOCK_NOSQL);
 
 Regex regexMatchClass1("regexMatchClass",
-                 "^\\s*FBYCLASS\\s*\\(\\s*(.*?)\\s*\\)\\s*\\:\\s*public \\s*FbyORM"
+                 "^\\s*FBYCLASS\\s*\\(\\s*(.*?)\\s*\\)\\s*\\:\\s*public \\s*(\\:\\:)?(Fby\\:\\:)?FbyORM"
     REGEXBLOCK_NOSQL);
 Regex regexMatchMember("regexMatchMember",
                        "^\\s*(bool|int|float|double|long|string|std\\:\\:string|time_t)\\s+(\\w+)\\s*;\\s*//\\s*SQL\\s+(.*?)\\,?\\s*(--.*)?$");
@@ -219,6 +219,7 @@ void ParseFile(const char *filename)
     oscpp << endl;
     oscpp << endl;
     oscpp << "using namespace std;" << endl;
+    oscpp << "using namespace Fby;" << endl;
 
     try
     {
