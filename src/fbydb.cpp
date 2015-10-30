@@ -230,16 +230,17 @@ namespace Fby {
         string r("'");
         size_t pos;
         size_t prevPos = 0;
-        const char *apos = "'";
+        const char apos[] = "'";
 
         pos = s.find(apos);
         while (pos != string::npos)
         {
-            r = r + s.substr(prevPos, pos) + apos;
+            string ss(s.substr(prevPos, pos - prevPos));
+            r = r + ss + apos;
             prevPos = pos;
             pos = s.find(apos, pos + 1);
         }
-        r += s.substr(prevPos) + "'";
+        r += s.substr(prevPos) + apos;
         return r;
     }
 

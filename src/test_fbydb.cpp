@@ -1,12 +1,13 @@
 #include "fby.h"
 #include "fbydb.h"
-#include "wikiobjects.h"
+// #include "wikiobjects.h"
 
 #include <iostream>
 
 
 
 using namespace std;
+using namespace Fby;
 
 const char *testDates[] =
 {
@@ -47,7 +48,8 @@ int main(int /* argc */, const char * const * /* argv */)
     }
     
     cout << "About to instantiate SQlite" << endl;
-    FbyDBPtr db(FBYNEW FbySQLiteDB("../var/fby.sqlite3") );
+    FbyDBPtr db(new FbySQLiteDB("../var/fby.sqlite3") );
+#if 0
     cout << "About to load" << endl;
 
     vector<WikiEntryPtr> data;
@@ -92,8 +94,8 @@ int main(int /* argc */, const char * const * /* argv */)
     {
         cout << "Got the right number of fields in the first element of selectrows" << endl;
     }
-
-
+#endif
+    cout << db->Quote("Any of y'all have electric (or well controlled propane) smokers that you'd recommend? It's time to get more control than charcoal allows.") << endl;
 
     return 0;
 }

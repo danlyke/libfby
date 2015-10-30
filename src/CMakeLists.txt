@@ -138,6 +138,9 @@ target_link_libraries (test_regexparse LINK_PUBLIC fby sqlite3 pq boost_filesyst
 add_executable(test_fbyregex test_fbyregex.cpp)
 target_link_libraries (test_fbyregex LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
+add_executable(test_fbydb test_fbydb.cpp)
+target_link_libraries (test_fbydb LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
+
 add_executable(test_endswith test_endswith.cpp)
 target_link_libraries (test_endswith LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
