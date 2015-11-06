@@ -650,7 +650,7 @@ void RegexHeader::ProcessMatches(TreeBuilder & treeBuilder,
         header[2] = '\0';
 
         string sectionName(header);
-        sectionName += ":" + NormalizeWikiNameToFilename(
+        sectionName += "_" + NormalizeWikiNameToFilename(
             NormalizeWikiName(match.Match(2)));
 
         ParseTreeNodePtr nodeHeader(new ElementNode(header));
