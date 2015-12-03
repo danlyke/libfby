@@ -26,6 +26,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ../bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 
+LINK_DIRECTORIES( ${LINK_DIRECTORIES} $ENV{HOME}/lib)
+include_directories($ENV{HOME}/include)
 
 
 add_library(fby STATIC fbystd.cpp fbystring.cpp fbyparsetree.cpp fbyregex.cpp fby_core_unix_helpers.cpp fbydb.cpp fbydb_sqlite3.cpp fbydb_postgresql.cpp fbyregexparser.cpp fbytreebuilder.cpp fbywikistrings.cpp fbynetserver.cpp fbynetsocket.cpp fbynethttp.cpp fbyfileutils.cpp fbyimageutils.cpp fbyfilefind.cpp textparse.yy.cpp parsertokens.cpp)
@@ -70,6 +72,12 @@ target_link_libraries (test_removecrs LINK_PUBLIC fby sqlite3 pq boost_filesyste
 
 add_executable(test_wikistring test_wikistring.cpp)
 target_link_libraries (test_wikistring LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
+
+add_executable(example_inverse example_inverse.cpp)
+target_link_libraries (example_inverse LINK_PUBLIC Geographic)
+
+add_executable(example_simplexml2 example_simplexml2.cpp)
+target_link_libraries (example_simplexml2 LINK_PUBLIC tinyxml2)
 
 add_executable(example_file example_file.cpp)
 target_link_libraries (example_file LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
