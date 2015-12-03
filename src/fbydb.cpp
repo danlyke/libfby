@@ -55,6 +55,22 @@ namespace Fby {
         strftime(timebuf, sizeof(timebuf), "%Y-%m-%d %H:%M:%S%z", ptm);
         return string(timebuf);
     }
+    string TimeToTextDay(time_t t)
+    {
+        struct tm *ptm = gmtime(&t);
+        char timebuf[32];
+
+        strftime(timebuf, sizeof(timebuf), "%Y-%m-%d", ptm);
+        return string(timebuf);
+    }
+    string TimeToTextTime(time_t t)
+    {
+        struct tm *ptm = gmtime(&t);
+        char timebuf[32];
+
+        strftime(timebuf, sizeof(timebuf), "%H:%M:%S%z", ptm);
+        return string(timebuf);
+    }
 
 
 
