@@ -59,6 +59,12 @@ Regex(const char *regexString, bool caseless = true)
 
     bool Match(const char *buffer, int length, RegexMatch &match);
     bool Match(const std::string &str, RegexMatch &match) { return Match(str.c_str(), str.length(), match); }
+    bool Match(const char *buffer, int length)
+    {
+        RegexMatch match;
+        return Match(buffer,length, match);
+    }
+    bool Match(const std::string &str) { return Match(str.c_str(), str.length()); }
     virtual ~Regex() { Free(); }
     const char *Name() { return regexName; }
 };
