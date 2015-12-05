@@ -76,8 +76,14 @@ target_link_libraries (test_wikistring LINK_PUBLIC fby sqlite3 pq boost_filesyst
 add_executable(example_inverse example_inverse.cpp)
 target_link_libraries (example_inverse LINK_PUBLIC Geographic)
 
+add_executable(example_filesystempathstem example_filesystempathstem.cpp)
+target_link_libraries (example_filesystempathstem LINK_PUBLIC boost_filesystem boost_system)
+
 add_executable(example_simplexml2 example_simplexml2.cpp)
 target_link_libraries (example_simplexml2 LINK_PUBLIC tinyxml2)
+
+add_executable(example_parsegpx example_parsegpx.cpp)
+target_link_libraries (example_parsegpx LINK_PUBLIC tinyxml2 Geographic fby)
 
 add_executable(example_file example_file.cpp)
 target_link_libraries (example_file LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
