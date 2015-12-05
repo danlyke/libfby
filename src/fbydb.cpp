@@ -24,9 +24,23 @@ namespace Fby {
     
         if (!(lastchar && !*lastchar))
         {
+            lastchar = strptime(textDate.c_str(), "%Y-%m-%dT%H:%M:%S%z", &t);
+        }
+        if (!(lastchar && !*lastchar))
+        {
             memset(&t, '\0', sizeof(t));
             lastchar = strptime(textDate.c_str(), "%Y-%m-%d %H:%M:%S", &t);
     
+            if (!(lastchar && *lastchar == '.'))
+            {
+                lastchar = strptime(textDate.c_str(), "%Y-%m-%dT%H:%M:%S", &t);
+            }
+    
+            if (!(lastchar && *lastchar == '.'))
+            {
+                lastchar = strptime(textDate.c_str(), "%Y-%m-%dT%H:%M:%SZ", &t);
+            }
+
             if (!(lastchar && *lastchar == '.'))
             {
                 if (!(lastchar && !*lastchar))
