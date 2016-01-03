@@ -23,7 +23,6 @@ const char * GetElementValue(const XMLDocument &doc, const char **path)
     while (*path && NULL != (node = node->FirstChildElement(*path))
            && (element = node->ToElement()))
     {
-        cout << "Searching under " << element->Name() << " for " << *path << endl;
         path++;
     }
     return element ? element->GetText() : "";
@@ -37,7 +36,7 @@ const char * GetElementValue(const XMLElement *element, const char **path)
     while (*path && NULL != (node = node->FirstChildElement(*path))
            && (element = node->ToElement()))
     {
-        cout << "Searching under " << element->Name() << " for " << *path << endl;
+//        cout << "Searching under " << element->Name() << " for " << *path << endl;
         path++;
     }
     return (node && element) ? element->GetText() : "";
@@ -53,7 +52,7 @@ const XMLElement * GetElement(const XMLDocument &doc, const char **path)
     while (*path && NULL != (node = node->FirstChildElement(*path))
            && (element = node->ToElement()))
     {
-        cout << "Searching under " << element->Name() << " for " << *path << endl;
+//        cout << "Searching under " << element->Name() << " for " << *path << endl;
         path++;
     }
     return element;
@@ -132,6 +131,7 @@ int main(int argc, char **argv)
     const char *trk_path[] = { "gpx", "trk", NULL };
     time_t firsttime(0);
     time_t lasttime(0);
+    bool needs_comma = false;
     double distance(0.0);
     const Geodesic& geod = Geodesic::WGS84();
     
@@ -143,16 +143,15 @@ int main(int argc, char **argv)
 //        XMLElement *element = doc.RootElement();
         
 //        DumpNode(element);
-        cout << "Time is " << GetElementValue(doc, time_path) << endl;
+//        cout << "Time is " << GetElementValue(doc, time_path) << endl;
+        cout << '[' << endl;
+
         for (const XMLElement *nodeTrack = GetElement(doc, trk_path);
              nodeTrack; nodeTrack = nodeTrack->NextSiblingElement("trk"))
         {
-            cout << "Name is " << GetElementValue(nodeTrack, "name") << endl;
-
             for (const XMLElement *nodeTrackseg = nodeTrack->FirstChildElement("trkseg");
                  nodeTrackseg; nodeTrackseg = nodeTrackseg->NextSiblingElement("trkseg"))
             {
-                cout << "Found track segment" << endl;
                 double prevlat(FLT_MAX);
                 double prevlon(FLT_MAX);
                 time_t prevtime(0);
@@ -169,30 +168,37 @@ int main(int argc, char **argv)
                         const char *ele = GetElementValue(nodeTrackpoint,"ele");
                         const char *time = GetElementValue(nodeTrackpoint,"time");
 
-                        cout << "Trackpoint: " << lat << ", " << lon << " Elevation: " << ele << " at "
-                             << time;
+//                        cout << "Trackpoint: " << lat << ", " << lon << " Elevation: " << ele << " at "
+//                             << time;
 
                         time_t thistime = TextDateToTime(time);
+                        if (!firsttime)
+                            firsttime = thistime;
+                       
                         if (prevlat != FLT_MAX && prevlon != FLT_MAX)
                         {
                             double s12(0.0);
                             geod.Inverse(lat, lon, prevlat, prevlon, s12);
                             distance += s12;
-                            cout << " meters " << s12 << " speed " << CalcMPH(s12, thistime, prevtime)
-                                 << " min/mi " << CalcMinutesPerMile(s12, thistime, prevtime)
-                                 << " elapsed dist " << distance;
+                            if (needs_comma)
+                                cout << ",";
+                            needs_comma = true;
+                            cout << "{ \"time\" : " << (thistime - firsttime) << "000," << endl
+                                 << "  \"mph\" : " << CalcMPH(s12, thistime, prevtime) << "," << endl
+                                 << "  \"min_per_mile\" : \"" << CalcMinutesPerMile(s12, thistime, prevtime) << "\"," << endl
+                                 << "  \"lat\" : " << lat  << "," << endl
+                                 << "  \"lon\" : " << lon  << "," << endl
+                                 << "  \"ele\" : " << ele  << "" <<  endl
+                                 << "}";
                         }
-                        else
-                        {
-                            firsttime = thistime;
-                        }
+
                         
                        
                         if (const XMLElement *nodeExtensions = nodeTrackpoint->FirstChildElement("extensions"))
                         {
-                            cout << " speed " << GetElementValue(nodeExtensions, "gpx10:speed");
-                            cout << " accuracy " << GetElementValue(nodeExtensions, "ogt10:accuracy");
-                            cout << " course " << GetElementValue(nodeExtensions, "gpx10:course");
+//                            cout << " speed " << GetElementValue(nodeExtensions, "gpx10:speed");
+//                            cout << " accuracy " << GetElementValue(nodeExtensions, "ogt10:accuracy");
+//                            cout << " course " << GetElementValue(nodeExtensions, "gpx10:course");
                         }
                         cout << endl;
                         lasttime = thistime;
@@ -203,6 +209,7 @@ int main(int argc, char **argv)
                 }
             }
         }
+        cout << "]" << endl;
     }
-    cout << "Distance " << distance << " speed " << CalcMPH(distance, lasttime, firsttime) << " min/mi " << CalcMinutesPerMile(distance, lasttime, firsttime) << endl;
+//    cout << "Distance " << distance << " speed " << CalcMPH(distance, lasttime, firsttime) << " min/mi " << CalcMinutesPerMile(distance, lasttime, firsttime) << endl;
 }

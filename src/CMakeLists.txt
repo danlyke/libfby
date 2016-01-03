@@ -85,6 +85,9 @@ target_link_libraries (example_simplexml2 LINK_PUBLIC tinyxml2)
 add_executable(example_parsegpx example_parsegpx.cpp)
 target_link_libraries (example_parsegpx LINK_PUBLIC tinyxml2 Geographic fby)
 
+add_executable(example_parsegpxtojson example_parsegpxtojson.cpp)
+target_link_libraries (example_parsegpxtojson LINK_PUBLIC tinyxml2 Geographic fby)
+
 add_executable(example_file example_file.cpp)
 target_link_libraries (example_file LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
