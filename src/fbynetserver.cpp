@@ -272,7 +272,6 @@ Net::loop()
 
 	for (;(servers.size() || sockets.size()) && !termsig;) 
 	{
-        fprintf(stderr, "Beginning of event loop\n");
 		FD_ZERO(&read_fds);
 		FD_ZERO(&write_fds);
 
