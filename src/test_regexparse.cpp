@@ -6,6 +6,7 @@
 #include "fbystring.h"
 #include "fbyregexparser.h"
 
+using namespace std;
 using namespace Fby;
 
 class TestTreeBuilder : public TreeBuilder
@@ -15,6 +16,7 @@ public:
     virtual ~TestTreeBuilder() {}
     ParseTreeNode *NodeFactory(const std::string & nodename)
     {
+        cout << "Creating node " << nodename << endl;
         return new ElementNode(nodename);
     }
 };
