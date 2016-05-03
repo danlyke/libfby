@@ -24,6 +24,7 @@ FBYCLASS(TreeBuilder) : BaseObj {
 
 
         void ForEach(std::function<void (ParseTreeNodePtr)> f);
+        void ForEach(std::function<void (ParseTreeNodePtr, int)> f);
         void AsHTML(HTMLOutputter &outputter);
         ParseTreeNodePtr CurrentNode();
         bool Reuse(const char *name);

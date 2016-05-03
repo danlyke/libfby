@@ -16,6 +16,11 @@ void TreeBuilder::ForEach(std::function<void (ParseTreeNodePtr)> f)
     rootNode->ForEach(f);
 }
 
+void TreeBuilder::ForEach(std::function<void (ParseTreeNodePtr, int)> f)
+{
+    rootNode->ForEach(f, 0);
+}
+
 bool TreeBuilder::HasA(const char *name)
 {
     bool found(false);

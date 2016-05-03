@@ -679,7 +679,7 @@ void RegexParagraphBlockquoteIndent1::ProcessMatches(TreeBuilder &treeBuilder,co
 
 void RegexParagraphBlockquoteIndent2::ProcessMatches(TreeBuilder &treeBuilder
                                                             ,const char *buffer, size_t buffer_length,
-                                                            RegexMatch & /* match */)
+                                                            RegexMatch &match)
 {
     ParseTreeNodePtr nodeBlockquote(new ElementNode("blockquote") );
 
@@ -687,7 +687,7 @@ void RegexParagraphBlockquoteIndent2::ProcessMatches(TreeBuilder &treeBuilder
         treeBuilder.Push(nodeBlockquote);
     ParseTreeNodePtr nodeP(new ElementNode("p"));
     treeBuilder.Push(nodeP);
-    FormatParagraph(treeBuilder, buffer, buffer_length - 1);
+    FormatParagraph(treeBuilder, buffer + match.Start(1), match.Length(1));
     treeBuilder.Pop();
     treeBuilder.Pop();
 }

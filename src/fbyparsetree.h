@@ -76,13 +76,24 @@ FBYCLASS(ParseTreeNode) : public BaseObj
         {
         }
 
+        virtual void ForEachChild(std::function<void (ParseTreeNode *, int)> /* f */, int /* depth */)
+        {
+        }
+
         virtual void ForEachChild(std::function<bool (ParseTreeNode *)> /* f */ )
         {
         }
 
+
         virtual void ForEach(std::function<void (ParseTreeNode *)> f)
         {
             f(this); 
+        }
+
+        virtual void ForEach(std::function<void (ParseTreeNode *, int)> f,
+                             int depth = 0)
+        {
+            f(this, depth); 
         }
 
         virtual void ForEach(std::function<bool (ParseTreeNode *)> f)
@@ -90,6 +101,9 @@ FBYCLASS(ParseTreeNode) : public BaseObj
             f(this); 
         }
 
+        virtual void RemoveChildIf(std::function<bool (ParseTreeNodePtr)> /* f */ )
+        {
+        }
         virtual string GetText();
         virtual string GetAttribute(const char * /* name */);
 
@@ -139,10 +153,14 @@ FBYCLASS(ParseTreeNode) : public BaseObj
         virtual void AsHTML(HTMLOutputter &outputter);
 
         virtual void ForEachChild(std::function<void (ParseTreeNode *)> f) override;
+        virtual void ForEachChild(std::function<void (ParseTreeNode *, int)> f, int depth) override;
         virtual void ForEach(std::function<void (ParseTreeNode *)> f) override;
+        virtual void ForEach(std::function<void (ParseTreeNode *, int)> f, int depth = 0) override;
 
         virtual void ForEachChild(std::function<bool (ParseTreeNode *)> f) override;
         virtual void ForEach(std::function<bool (ParseTreeNode *)> f) override;
+        
+        void RemoveChildIf(std::function<bool (ParseTreeNodePtr)> f) override;
 
         void AddText(const string &text);
         virtual void AddChild(ParseTreeNodePtr child);

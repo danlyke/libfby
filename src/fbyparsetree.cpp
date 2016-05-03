@@ -100,6 +100,24 @@ void ElementNode::ForEachChild(std::function<bool (ParseTreeNode *)> f)
 }
 
 
+void ElementNode::RemoveChildIf(std::function<bool (ParseTreeNodePtr)> f)
+{
+    for (size_t i = 0; i < children.size(); ++i)
+    {
+        auto node(children[i]);
+        if (f(node))
+        {
+            children.erase(children.begin() + i);
+            --i;
+        }
+        else
+        {
+            node->RemoveChildIf(f);
+        }
+    }
+}
+
+
 void ElementNode::ForEach(std::function<bool (ParseTreeNode *)> f)
 {
     if (f(this))
@@ -116,11 +134,25 @@ void ElementNode::ForEachChild(std::function<void (ParseTreeNode *)> f)
     }
 }
 
+void ElementNode::ForEachChild(std::function<void (ParseTreeNode *, int)> f, int depth)
+{
+    for (auto node = children.begin(); node != children.end(); ++node)
+    {
+        (*node)->ForEach(f, depth);
+    }
+}
+
 
 void ElementNode::ForEach(std::function<void (ParseTreeNode *)> f)
 {
     f(this);
     ForEachChild(f);
+}
+
+void ElementNode::ForEach(std::function<void (ParseTreeNode *, int)> f, int depth)
+{
+    f(this, depth);
+    ForEachChild(f, depth + 1);
 }
 
 

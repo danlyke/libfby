@@ -140,6 +140,8 @@ target_link_libraries (example_httpservertimer LINK_PUBLIC fby sqlite3 pq boost_
 add_executable(example_httpserver example_httpserver.cpp)
 target_link_libraries (example_httpserver LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
+add_executable(example_parsing example_parsing.cpp)
+target_link_libraries (example_parsing LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
 add_executable(test_nettimers test_nettimers.cpp)
 target_link_libraries (test_nettimers LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
