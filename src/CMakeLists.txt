@@ -30,7 +30,8 @@ LINK_DIRECTORIES( ${LINK_DIRECTORIES} $ENV{HOME}/lib)
 include_directories($ENV{HOME}/include)
 
 
-add_library(fby STATIC fbystd.cpp fbystring.cpp fbyparsetree.cpp fbyregex.cpp fby_core_unix_helpers.cpp fbydb.cpp fbydb_sqlite3.cpp fbydb_postgresql.cpp fbyregexparser.cpp fbytreebuilder.cpp fbywikistrings.cpp fbynetserver.cpp fbynetsocket.cpp fbynethttp.cpp fbyfileutils.cpp fbyimageutils.cpp fbyfilefind.cpp textparse.yy.cpp parsertokens.cpp)
+add_library(fby STATIC fbystd.cpp fbystring.cpp fbyparsetree.cpp fbyregex.cpp fby_core_unix_helpers.cpp fbydb.cpp fbydb_sqlite3.cpp fbydb_postgresql.cpp fbyregexparser.cpp fbytreebuilder.cpp fbywikistrings.cpp fbynetserver.cpp fbynetsocket.cpp fbynethttp.cpp fbyfileutils.cpp fbyimageutils.cpp fbyfilefind.cpp  parsertokens.cpp)
+# textparse.yy.cpp
 
 target_link_libraries(fby LINK_PUBLIC sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams )
 
@@ -94,8 +95,8 @@ target_link_libraries (example_file LINK_PUBLIC fby sqlite3 pq boost_filesystem 
 add_executable(example_lambda example_lambda.cpp)
 target_link_libraries (example_lambda LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
-add_executable(example_flex example_flex.cpp)
-target_link_libraries (example_flex LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
+#add_executable(example_flex example_flex.cpp)
+#target_link_libraries (example_flex LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
 
 add_executable(example_tester example_tester.cpp)
 target_link_libraries (example_tester LINK_PUBLIC fby sqlite3 pq boost_filesystem boost_system gdbm pcre boost_iostreams boost_program_options cgicc /home/danlyke/lib/libgtest.a /home/danlyke/lib/libgtest_main.a pthread)
