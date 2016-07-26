@@ -40,8 +40,12 @@ namespace boost
 #define FBYCLASSUNMANAGEDPTR(c) class c; typedef c* c##Ptr
 #define FBYABSTRACTCLASS(c) class c
 #define FBYCLASSPTR(c) class c; typedef boost::intrusive_ptr<c> c##Ptr
-#define FBYCLASSLITEPTR(c) class c; typedef boost::shared_ptr<c> c##Ptr
 //#define FBYCLASSLITEPTR(c) class c; typedef boost::shared_ptr<c> c##Ptr
+//#define FBYCLASSLITEPTR(c) class c; typedef boost::shared_ptr<c> c##Ptr
+
+
+#define FBYSTRINGIFY_(x) #x
+#define FBYSTRINGIFY(x) FBYSTRINGIFY_(x)
 
 
 namespace Fby

@@ -23,7 +23,7 @@ namespace Fby {
     long wrapper_stold(const std::string &in);
 
 
-#define FBYORM_SQLOBJECT private:                                       \
+#define FBYORM_SQLOBJECT public:                                       \
     virtual void AssignToMember(const std::string & memberName,         \
                                 const std::string & value);             \
     virtual std::string AssignFromMember(const std::string &memberName); \
