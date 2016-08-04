@@ -11,19 +11,21 @@ namespace boost
 	void intrusive_ptr_add_ref(Fby::BaseObj * p)
 	{
 		// increment reference count of object *p
-
-		++(p->baseObjReferences);
+            p->IncrementGarbageCollecterReferenceCount();
 	}
 
 
 
 	void intrusive_ptr_release(Fby::BaseObj * p)
 	{
-		// decrement reference count, and delete object when reference count reaches 0
+            // decrement reference count, and delete object when reference count reaches 0
 
-		if (--(p->baseObjReferences) == 0)
-			delete p;
-			//p->Wipe();
+            if (p->DecrementGarbageCollecterReferenceCount() == 0)
+            {
+                delete p;
+                //p->Wipe();
+            }
+
 	} 
 
 
