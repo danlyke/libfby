@@ -73,6 +73,16 @@ FBYCLASS(Server) : public BaseObj
     public:
         ServerPtr listen(int socket);
         Server(Net * net, CreateServerFunction create_func);
+        virtual int IncrementGarbageCollecterReferenceCount()
+        {
+            std::cout << "Incrementing server reference count from " << p->baseObjReferences << endl
+            return ++(p->baseObjReferences);
+        }
+        virtual int DecrementGarbageCollecterReferenceCount()
+        {
+            std::cout << "Decrementing server reference count from " << p->baseObjReferences << endl
+            return --(p->baseObjReferences);
+        }
     };
 
 

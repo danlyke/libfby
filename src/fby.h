@@ -58,12 +58,19 @@ namespace Fby
 		int baseObjReferences;
 		const char *baseObjName;
 		int baseObjSize;
-		friend void ::boost::intrusive_ptr_add_ref(BaseObj* p);
-		friend void ::boost::intrusive_ptr_release(BaseObj* p);
+
 		void Wipe();
 	public:
 		BaseObj(const char *name, int size);
-		virtual ~BaseObj();	
+		virtual ~BaseObj();
+                virtual int IncrementGarbageCollecterReferenceCount()
+                {
+                    return ++(p->baseObjReferences);
+                }
+                virtual int DecrementGarbageCollecterReferenceCount()
+                {
+                    return --(p->baseObjReferences);
+                }
 	};
 }
 
