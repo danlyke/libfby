@@ -465,7 +465,7 @@ Net::loop()
             cout << "After drain check Timers is now " << timers.size() << endl;
         
 
-        for (size_t i = 0; i < sockets.size(); ++i)
+        for (size_t i = 0; i < servers.size(); ++i)
         {
             if (servers[i]->fd < 0)
             {

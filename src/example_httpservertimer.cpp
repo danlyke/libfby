@@ -18,12 +18,12 @@ int main(int /* argc */, char ** /* argv */)
 
     auto timer = net->setInterval([]() { cout << "Timer!" << endl; }, 10 * 1000);
 
-    net->createServer([](SocketPtr socket)
+    net->createServer([net](SocketPtr socket)
                      {
                          HTTPRequestBuilderPtr requestBuilder
                              (new HTTPRequestBuilder
                               (socket,
-                                  [](HTTPRequestPtr request, HTTPResponsePtr response)
+                                  [net](HTTPRequestPtr request, HTTPResponsePtr response)
                                   {
                                       for (auto v = request->headers.begin();
                                            v != request->headers.end();
@@ -36,6 +36,7 @@ int main(int /* argc */, char ** /* argv */)
                                           response->writeHead(404);
                                           response->end("<html><head><title>Nope!</title></head><body><h1>Ain't there, dude!</h1></body></html>\n");
                                       }
+                                      auto timer = net->setInterval([]() { cout << "Other Timer!" << endl; }, 5 * 1000);
                                   }
                                   ));
                          

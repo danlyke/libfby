@@ -5,7 +5,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    string s("A very  long string that-has-some hyphenated\.");
+    string s("A very  long string that-has-some hyphenated.");
     Regex regW("\\W+");
     vector<string> a(split(regW, s));
                      
