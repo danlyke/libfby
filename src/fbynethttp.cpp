@@ -288,6 +288,22 @@ void HTTPResponse::respondHTML(int resultCode,
     respondHTML(resultCode,attrs,title,body);
 }
 
+void HTTPResponse::respondRaw(int resultCode, std::map<std::string, std::string> attrs,
+                              const std::string &body)
+{
+//    attrs["Content-Type"] = "text/html; charset=utf-8";
+    attrs["Content-Length"] = std::to_string(body.length());
+    writeHead(resultCode, attrs);
+    end(body);
+}
+
+void HTTPResponse::respondRaw(int resultCode, 
+                              const std::string &body)
+{
+    std::map<std::string, std::string> attrs;
+    respondRaw(resultCode,attrs,body);
+}
+
 void HTTPResponse::respondHTML(int resultCode, const std::string &body)
 {
     std::map<std::string, std::string> attrs;
@@ -672,7 +688,7 @@ bool ::Fby::ServeFile(const char * fileRoot, HTTPRequestPtr request, HTTPRespons
     { 
         response->respondHTML(404,
                               "Not Found",
-                              "Error in finding <i>" + path + "</i>");
+                              "Unable to find <i>" + path + "</i>");
     }
 
     if (S_ISDIR(statbuf.st_mode))

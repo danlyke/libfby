@@ -196,6 +196,10 @@ FBYCLASS(HTTPResponse) : public BaseObj
         void respondHTML(int code, 
                          const std::string &title, const std::string &body);
         void respondHTML(int code, const std::string &body);
+        void respondRaw(int code, std::map<std::string, std::string> attrs,
+                        const std::string &body);
+        void respondRaw(int code, 
+                        const std::string &body);
 
         bool write(const char *data, size_t length) { return socket->write(data,length);}
         bool write(const std::string &s) { return socket->write(s);}

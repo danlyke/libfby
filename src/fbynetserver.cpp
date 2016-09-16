@@ -353,13 +353,13 @@ Net::loop()
             if (FD_ISSET((*server)->fd,&read_fds)) 
             {
                 int fd = accept((*server)->fd, NULL, NULL);
-				if (-1 == fd)
-				{
-					if (EAGAIN != errno)
-						perror("accept");
-				}	
-				else
-				{
+                if (-1 == fd)
+                {
+                    if (EAGAIN != errno)
+                        perror("accept");
+                }	
+                else
+                {
                     SocketPtr socket(new Socket);
                     socket->SetSocketServerAndFile(this, fd);
 					fcntl(fd,F_SETFL,O_NONBLOCK);

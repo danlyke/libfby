@@ -21,7 +21,22 @@ bool Socket::write(char const *data, size_t size)
 {
 //    fprintf(stderr, "Writing Socket %lx %*s to %d\n", (unsigned long)(this), (int)size, data, fd);
     bool wroteEverything(false);
+    if (-1 == fd)
+        return true;
+    
     ssize_t bytes_written = ::write(fd, data, size);
+    if (bytes_written < 0)
+    {
+        if (EAGAIN != errno)
+        {
+            bytes_written = 0;
+        }
+    }
+    if (bytes_written < 0)
+    {
+        fd = -1;
+        return true;
+    }
 
 //    fprintf(stderr, "Wrote %d\n", (int)bytes_written);
     if (bytes_written > 0)

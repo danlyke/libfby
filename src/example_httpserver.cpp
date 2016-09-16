@@ -23,6 +23,7 @@ int main(int /* argc */, char ** /* argv */)
                               (socket,
                                   [](HTTPRequestPtr request, HTTPResponsePtr response)
                                   {
+                                      cout << "Headers" << endl;
                                       for (auto v = request->headers.begin();
                                            v != request->headers.end();
                                            ++v)
@@ -31,8 +32,6 @@ int main(int /* argc */, char ** /* argv */)
                                       }
                                       if (!ServeFile("../t/html", request,response))
                                       {
-                                          response->writeHead(404);
-                                          response->end("<html><head><title>Nope!</title></head><body><h1>Ain't there, dude!</h1></body></html>\n");
                                       }
                                   }
                                   ));
